@@ -6,7 +6,7 @@ class Cell:
         self.fixed = fixed
 
     def __repr__(self):
-        return self.value
+        return str(self.value)
 
     def __str__(self):
         return str(self.value)
@@ -22,8 +22,8 @@ class Board:
     def emptyBoard(self):
         '''Board -> None
         This method sets all the values on the board to null'''
-        for i in self.board:
-            for j in self.board[i]:
+        for i in range(len(self.board)):
+            for j in range(len(self.board[0])):
                 self.board[i][j].value = '-'
 
     def resetBoard(self):
@@ -58,14 +58,12 @@ class Board:
             print()
             row += 1
 
-
     def checkBoard(self):
         '''Board -> Boolean
         This method checks if all the values in the board meet
         the constraints set by the game of Sudoku'''
         if(self.isComplete()):
             print()
-
 
     def checkRow(self, row):
         '''Board, int -> Boolean
@@ -95,15 +93,15 @@ class Board:
 
         c1, c2, c3, c4, c5, c6, c7, c8, c9 = 0, 0, 0, 0, 0, 0, 0, 0, 0
         for i in range(len(self.board)):
-            if self.board[i][column] == 1: c1 +=1
-            if self.board[i][column] == 2: c2 += 1
-            if self.board[i][column] == 3: c3 += 1
-            if self.board[i][column] == 4: c4 += 1
-            if self.board[i][column] == 5: c5 += 1
-            if self.board[i][column] == 6: c6 += 1
-            if self.board[i][column] == 7: c7 += 1
-            if self.board[i][column] == 8: c8 += 1
-            if self.board[i][column] == 9: c9 += 1
+            if self.board[i][column].value == 1: c1 +=1
+            elif self.board[i][column].value == 2: c2 += 1
+            elif self.board[i][column].value == 3: c3 += 1
+            elif self.board[i][column].value == 4: c4 += 1
+            elif self.board[i][column].value == 5: c5 += 1
+            elif self.board[i][column].value == 6: c6 += 1
+            elif self.board[i][column].value == 7: c7 += 1
+            elif self.board[i][column].value == 8: c8 += 1
+            elif self.board[i][column].value == 9: c9 += 1
 
         return c1 < 2 and c2 < 2 and c3 < 2 and c4 < 2 and c5 < 2 and c6 < 2 and c7 < 2 and c8 < 2 and c9 < 2
 
@@ -136,21 +134,19 @@ class Board:
             else:
                 rowStart, rowStop, colStart, colStop= 6, 8, 6, 8
 
-        for i in range(rowStart, rowStop):
-            for j in range(colStart, colStop):
-                if self.board[i][j] == 1: c1 += 1
-                if self.board[i][j] == 2: c2 += 1
-                if self.board[i][j] == 3: c3 += 1
-                if self.board[i][j] == 4: c4 += 1
-                if self.board[i][j] == 5: c5 += 1
-                if self.board[i][j] == 6: c6 += 1
-                if self.board[i][j] == 7: c7 += 1
-                if self.board[i][j] == 8: c8 += 1
-                if self.board[i][j] == 9: c9 += 1
+        for i in range(rowStart, rowStop+1):
+            for j in range(colStart, colStop+1):
+                if self.board[i][j].value == 1: c1 += 1
+                elif self.board[i][j].value == 2: c2 += 1
+                elif self.board[i][j].value == 3: c3 += 1
+                elif self.board[i][j].value == 4: c4 += 1
+                elif self.board[i][j].value == 5: c5 += 1
+                elif self.board[i][j].value == 6: c6 += 1
+                elif self.board[i][j].value == 7: c7 += 1
+                elif self.board[i][j].value == 8: c8 += 1
+                elif self.board[i][j].value == 9: c9 += 1
 
-
-
-
+        return c1 < 2 and c2 < 2 and c3 < 2 and c4 < 2 and c5 < 2 and c6 < 2 and c7 < 2 and c8 < 2 and c9 < 2
 
     def generateBoard(self, difficulty):
         '''Board, int -> None
@@ -162,10 +158,9 @@ class Board:
                 dif = random.randint(0, difficulty+1)
                 if (dif == 1):
                     self.board[i][j].value = random.randint(1,9)
+                    while not (self.checkRow(i) and self.checkColumn(j) and self.checkSquare(i, j)):
+                        self.board[i][j].value = random.randint(1, 9)
                     self.board[i][j].fixed = True
-
-
-
 
     def addValue(self, row, column, value):
         '''Board, int, int, int -> Boolean'''
