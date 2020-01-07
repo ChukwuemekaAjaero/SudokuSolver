@@ -13,6 +13,7 @@ class Cell:
 
 class Board:
     board = []
+    emptyCells = 81
     def __init__(self):
         for row in range(9):
             self.board.append([])
@@ -148,6 +149,66 @@ class Board:
 
         return c1 < 2 and c2 < 2 and c3 < 2 and c4 < 2 and c5 < 2 and c6 < 2 and c7 < 2 and c8 < 2 and c9 < 2
 
+    def findEmptyLocation(self, locationList):
+        '''Board, list -> Boolean
+        This function finds the next empty cell on the
+        board. Once found, it places the index of that
+        cell in the locationList and returns True.
+        Otherwise it returns False'''
+
+        for row in range(len(self.board)):
+            for column in range(len(self.board[0])):
+                if(self.board[row][column].value == '-'):
+                    locationList[0] = row
+                    locationList[1] = column
+                    return True
+        return False
+
+
+    def usedInRow(self, row, val):
+        '''Board, int, int -> Boolean
+        This method scans a specified row on the board
+        and returns True if the specified value is in
+        that row and False otherwise'''
+
+        for column in range(len(self.board)):
+            if(self.board[row][column].value == val):
+                return True
+        return False
+
+    def usedInColumn(self, column, val):
+        '''Board, int, int -> Boolean
+        This method scans a specified column on the board
+        and returns True if the specified value is in
+        that row and False otherwise'''
+
+        for row in range(len(self.board)):
+            if(self.board[row][column].value == val):
+                return True
+        return False
+
+    def usedInSquare(self, row, column, val):
+        '''Board, int, int, int -> Boolean
+        This method scans a specified square on the board
+        and returns True if the specified value is in
+        that row and False otherwise'''
+
+        for i in range(3):
+            for j in range(3):
+                if(self.board[row+i][column+j].value == val):
+                    return True
+        return False
+
+    def checkLocationSafe(self, row, column, val):
+        '''Board, int, int, int -> Boolean
+        This method checks if it is safe to insert
+        the specified value at the given position'''
+        a = not self.usedInRow(row, val)
+        b = not self.usedInColumn(column, val)
+        c = not self.usedInSquare(row - row%3, column - column%3, val) # mod3 is used to prevent indexOutOfBounds error
+
+        return a and b and c
+
     def generateBoard(self, difficulty):
         '''Board, int -> None
         Precondition: difficulty is greater than or equal
@@ -157,6 +218,7 @@ class Board:
             for j in range(len(self.board[0])):
                 dif = random.randint(0, difficulty+1)
                 if (dif == 1):
+                    self.emptyCells -= 1
                     self.board[i][j].value = random.randint(1,9)
                     while not (self.checkRow(i) and self.checkColumn(j) and self.checkSquare(i, j)):
                         self.board[i][j].value = random.randint(1, 9)
@@ -171,14 +233,31 @@ class Board:
     def isComplete(self):
         '''Board -> Boolean'''
 
-        for i in len(self.board):
-            for j in len(self.board[0]):
+        for i in range(len(self.board)):
+            for j in range(len(self.board[0])):
                 if (self.board[i][j] == '-'):
                     return False
         return True
 
     def solveBackTracking(self):
-        '''Board -> None'''
+        '''Board -> Boolean'''
+
+        locationList = [0,0]
+
+        if(not self.findEmptyLocation(locationList)):
+            return True
+
+        row = locationList[0]
+        col = locationList[1]
+
+        for val in range(1, 10):
+            if(self.checkLocationSafe(row, col, val)):
+                self.board[row][col].value = val
+                if(self.solveBackTracking()):
+                    return True
+                self.board[row][col].value = '-'
+
+        return False
 
     def solveStochasticSearch(self):
         '''Board -> None'''
