@@ -158,7 +158,7 @@ class Board:
 
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
-                if(self.board[row][column].value == '-'):
+                if self.board[row][column].value == '-':
                     locationList[0] = row
                     locationList[1] = column
                     return True
@@ -244,7 +244,7 @@ class Board:
 
         locationList = [0,0]
 
-        if(not self.findEmptyLocation(locationList)):
+        if not self.findEmptyLocation(locationList):
             return True
 
         row = locationList[0]
