@@ -216,7 +216,7 @@ class Board:
 
         for i in range(len(self.board)):
             for j in range(len(self.board[0])):
-                dif = random.randint(0, difficulty+1)
+                dif = random.randint(1, difficulty)
                 if (dif == 1):
                     self.emptyCells -= 1
                     self.board[i][j].value = random.randint(1,9)
